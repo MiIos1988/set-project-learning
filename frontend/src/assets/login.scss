@@ -1,0 +1,14 @@
+.page-title {
+  border: 1px solid #f2f2f2;
+  font-size: 20px;
+  padding: 15px;
+}
+.from-wrapper {
+  display: flex;
+  justify-content: center;
+
+  .login-form {
+    padding: 30px;
+    border: 1px solid #f2f2f2;
+  }
+}
