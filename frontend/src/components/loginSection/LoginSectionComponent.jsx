@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { loginUser } from "../../services/authService";
+import { loginUser, setUserToLocalStorage } from "../../services/authService";
 
 const LoginSectionComponent = () => {
   const [singInObj, setSingInObj] = useState({
@@ -7,6 +7,7 @@ const LoginSectionComponent = () => {
     password: "",
   });
   const [validationMsg, setValidationMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState('')
 
   const handleSignInObj = (e) => {
     let copySingInObj = { ...singInObj };
@@ -20,7 +21,25 @@ const LoginSectionComponent = () => {
         `Required field: ${!singInObj.password ? "password" : "email"}`
       );
     }
-    loginUser(singInObj);
+    loginUser(singInObj)
+      .then(response => {
+        console.log('response...', response);
+        if (response.status === 215) {
+          setErrorMsg(response.data)
+        } else {
+          setUserToLocalStorage(response.data)
+          //   navigate('/')
+        }
+      })
+      .catch(error => {
+        console.log('error...', error);
+        if (error) {
+          setErrorMsg('Something went wrong. Please try again.')
+        }
+      })
+      .finally(() => {
+
+      })
   };
 
   return (
