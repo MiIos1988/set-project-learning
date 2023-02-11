@@ -1,13 +1,18 @@
 import React, { useState } from "react";
 import { loginUser, setUserToLocalStorage } from "../../services/authService";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { saveUser } from "../../redux/user.slicer";
 
 const LoginSectionComponent = () => {
+  const navigate = useNavigate();
   const [singInObj, setSingInObj] = useState({
     email: "",
     password: "",
   });
   const [validationMsg, setValidationMsg] = useState("");
-  const [errorMsg, setErrorMsg] = useState('')
+  const [errorMsg, setErrorMsg] = useState("");
+  const dispatch = useDispatch();
 
   const handleSignInObj = (e) => {
     let copySingInObj = { ...singInObj };
@@ -22,24 +27,23 @@ const LoginSectionComponent = () => {
       );
     }
     loginUser(singInObj)
-      .then(response => {
-        console.log('response...', response);
+      .then((response) => {
+        console.log("response...", response);
         if (response.status === 215) {
-          setErrorMsg(response.data)
+          setErrorMsg(response.data);
         } else {
-          setUserToLocalStorage(response.data)
-          //   navigate('/')
+          setUserToLocalStorage(response.data);
+          dispatch(saveUser(response.data));
+          navigate("/");
         }
       })
-      .catch(error => {
-        console.log('error...', error);
+      .catch((error) => {
+        console.log("error...", error);
         if (error) {
-          setErrorMsg('Something went wrong. Please try again.')
+          setErrorMsg("Something went wrong. Please try again.");
         }
       })
-      .finally(() => {
-
-      })
+      .finally(() => {});
   };
 
   return (
@@ -70,6 +74,9 @@ const LoginSectionComponent = () => {
             />
           </div>
           <button onClick={onLoginSubmit}>Sign In</button>
+          <br />
+          {validationMsg && <p>{validationMsg}</p>}
+          {errorMsg && <p>{errorMsg}</p>}
         </div>
       </div>
     </>
